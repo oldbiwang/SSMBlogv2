@@ -1,1 +1,0 @@
-*.JavaScript linguist-language=java
