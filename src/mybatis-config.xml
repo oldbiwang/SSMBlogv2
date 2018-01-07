@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 下面的配置可以不用，因为连接数据库等信息是在 Spring 4 配置文件中进行定义 -->
+	<!--   <environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC"	/>
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost:3306/ssmblog"/>
+				<property name="username" value="root"/>
+				<property name="password" value="College86"/>
+			</dataSource>
+		</environment>
+	</environments> -->
+<!-- 	<mappers>
+		<mapper resource="mapping/IUserinfoMapping.xml"/>
+	</mappers>  -->
+	
+		<!-- 	- 配置全局属性 
+	<settings>
+		 使用jdbc的getGeneratedKeys获取数据库自增主键值 
+		<setting name="useGeneratedKeys" value="true" />
+
+		<setting name="useColumnLabel" value="true" />
+
+		开启驼峰命名转换:Table{create_time} -> Entity{createTime}
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+ -->
+<!-- 	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<property name="helperDialect" value="mysql"/>
+			<property name="reasonable" value="true"/>
+			<property name="supportMethodsArguments" value="true"/>
+          	<property name="autoRuntimeDialect" value="true"/>
+		</plugin>
+	</plugins> -->
+</configuration>

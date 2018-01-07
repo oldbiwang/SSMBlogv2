@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+  <context id="context1">
+    <jdbcConnection connectionURL="jdbc:mysql://localhost:3306/jspblog" driverClass="com.mysql.jdbc.Driver" password="College86" userId="root" />
+    <javaModelGenerator targetPackage="entity" targetProject="SSMBlog" />
+    <sqlMapGenerator targetPackage="mapping" targetProject="SSMBlog" />
+    <javaClientGenerator targetPackage="mapping" targetProject="SSMBlog" type="XMLMAPPER" />
+     <table schema="jspblog" tableName="blog">
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
+    <table schema="jspblog" tableName="category">
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
+    <table schema="jspblog" tableName="comment">
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
+    <table schema="jspblog" tableName="users">
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table> 
+    <table schema="jspblog" tableName="blogmd">
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table> 
+  </context>
+</generatorConfiguration>
