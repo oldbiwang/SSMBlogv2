@@ -58,9 +58,9 @@
 jar 包已上传，没有使用 maven 的原因是想减少点难度，缺点就是项目有点大，不过这样可以降低学习的难度，应该不会出现 jar 包版本冲突导致失去兴趣，无法继续学习。
 
 [项目 github 地址
-](http://git@github.com:oldbiwang/SSMBlogv2.git)
+](https://github.com/oldbiwang/SSMBlogv2.git)
 
-[项目 码云 地址](http://git@gitee.com:oldbiwang/SSMBlogv2.git)
+[项目 码云 地址](https://gitee.com/oldbiwang/SSMBlogv2.git)
 
 [项目的腾讯云网址](http://www.oldbiwang.cn)
 
@@ -69,3 +69,7 @@ jar 包已上传，没有使用 maven 的原因是想减少点难度，缺点就
 后台的展示页面，展示的美观程度也有待改善，但基本的功能是有的，能满足基本的博客管理，因为集成了强大好用的 editormd。我也想把我这次做这个博客小项目遇到的一些问题，以及学到的东西记录下来写成博客，但接下来毕业，时间比较紧，所以等我有时间一定要记录整理出来，方便以后我再次学习。
 
 我希望以后能找到 Java 后端的工作，如果你喜欢的话，欢迎帮我 star 。
+
+微信公众号
+
+![微信公众号](https://static.oschina.net/uploads/img/201801/08103055_p79u.jpg "在这里输入图片标题")
