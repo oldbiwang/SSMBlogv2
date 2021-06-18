@@ -12,40 +12,42 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import service.LoginService;
 
-
 @Controller
 public class LoginController {
-	private final LoginService service;
+  private final LoginService service;
 
-	@Autowired
-	public LoginController(LoginService service) {
-		this.service = service;
-	}
+  @Autowired
+  public LoginController(LoginService service) {
+    this.service = service;
+  }
 
-	@RequestMapping("/login")
-	public String login() {
-		return "admin/login";
-	}
-	
-	@RequestMapping(value="/validatellogin")
-	public String validatelogin(@RequestParam(value="username", required=false)String username,
-			@RequestParam(value="password",required=false)String password, HttpServletRequest request,
-			HttpServletResponse response) throws SaslException {
-			if(request.getSession().getAttribute("username") != null) {
-				return "admin/backadmin";
-			}
-			if(service.validate(username, password)) {
-				HttpSession session = request.getSession();
-				session.setAttribute("username", username);
-				return "admin/backadmin";
-			}
-			return "admin/loginfail";
-	}
-	
-	// 退出登陆
-	@RequestMapping("logout")
-	public String logout(HttpServletRequest request, HttpServletResponse response) {
-		request.getSession().removeAttribute("username");
-		return "redirect:/login";
-	}
+  @RequestMapping("/login")
+  public String login() {
+    return "admin/login";
+  }
+
+  @RequestMapping(value = "/validatellogin")
+  public String validatelogin(
+      @RequestParam(value = "username", required = false) String username,
+      @RequestParam(value = "password", required = false) String password,
+      HttpServletRequest request,
+      HttpServletResponse response)
+      throws SaslException {
+    if (request.getSession().getAttribute("username") != null) {
+      return "admin/backadmin";
+    }
+    if (service.validate(username, password)) {
+      HttpSession session = request.getSession();
+      session.setAttribute("username", username);
+      return "admin/backadmin";
+    }
+    return "admin/loginfail";
+  }
+
+  // 退出登陆
+  @RequestMapping("logout")
+  public String logout(HttpServletRequest request, HttpServletResponse response) {
+    request.getSession().removeAttribute("username");
+    return "redirect:/login";
+  }
 }
