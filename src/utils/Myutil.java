@@ -5,10 +5,10 @@ import java.util.Random;
 public class Myutil {
 
 	/**
-	 * ·µ»ØËæ»úÊı
+	 * è¿”å›éšæœºæ•°
 	 * 
 	 * @param n
-	 *            ¸öÊı
+	 *            ä¸ªæ•°
 	 * @return
 	 */
 	public static String random(int n) {

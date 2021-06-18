@@ -22,7 +22,7 @@ public class CommentController {
 	@Autowired
 	private CommentService commentService;
 	
-	// Ìá½»ÆÀÂÛ
+	// æäº¤è¯„è®º
 	@RequestMapping(value="/sendcomment", method=RequestMethod.POST)
 	@ResponseBody
 	public Msg sendcomment(@RequestParam(value="id", required=true)int id, 
@@ -30,20 +30,20 @@ public class CommentController {
 		System.out.println("name = " + name + " \ncomment = " + comment);
 		commentService.sendcomment(id, name, comment);
 		Msg msg = Msg.success();
-		msg.setMsg("Ìá½»ÆÀÂÛ³É¹¦£¡");
+		msg.setMsg("æäº¤è¯„è®ºæˆåŠŸï¼");
 		return msg;
 	}
 	
-	// »ñµÃÆÀÂÛ
+	// è·å¾—è¯„è®º
 	@RequestMapping(value="/getComments", method=RequestMethod.GET)
 	@ResponseBody
 	public Msg getComments(@RequestParam("id")int id) {
-		// »ñÈ¡ÎÄÕÂËùÓĞµÄÆÀÂÛ
+		// è·å–æ–‡ç« æ‰€æœ‰çš„è¯„è®º
 		List<Comment> list = commentService.getComments(id);
 		return Msg.success().add("commentsList", list);
 	}
 	
-	// »ñµÃËùÓĞÆÀÂÛ
+	// è·å¾—æ‰€æœ‰è¯„è®º
 	@RequestMapping(value="/getallcomments", method=RequestMethod.GET)
 	@ResponseBody
 	public Msg getallcomments() {
@@ -51,10 +51,10 @@ public class CommentController {
 		return Msg.success().add("commentList", list);
 	}
 	
-	// ÆÀÂÛºóÌ¨¹ÜÀí
+	// è¯„è®ºåå°ç®¡ç†
 	@RequestMapping("/commentback")
 	public String commentback(HttpServletRequest request,HttpServletResponse response) {
-		//µÃµ½ session µÄÖµ£¬ÅĞ¶ÏÊÇ·ñÒÑ¾­µÇÂ½
+		//å¾—åˆ° session çš„å€¼ï¼Œåˆ¤æ–­æ˜¯å¦å·²ç»ç™»é™†
 		if(request.getSession().getAttribute("username") != null) {
 			String username = request.getSession().getAttribute("username").toString();
 			if(username != null) {
@@ -64,17 +64,17 @@ public class CommentController {
 		return "admin/error";
 	}
 	
-	// É¾³ıÒ»ÌõÆÀÂÛ
+	// åˆ é™¤ä¸€æ¡è¯„è®º
 	@RequestMapping(value="/deleteacomment",method=RequestMethod.GET)
 	@ResponseBody
 	public Msg deleteacomment(@RequestParam("id") int id) {
 		commentService.deletea(id);
 		Msg msg = Msg.success();
-		msg.setMsg("´ËÌõÆÀÂÛÒÑÉ¾³ı£¡");
+		msg.setMsg("æ­¤æ¡è¯„è®ºå·²åˆ é™¤ï¼");
 		return msg;
 	}
 	
-	// Ìá½»ÆÀÂÛ
+	// æäº¤è¯„è®º
 	@RequestMapping(value="/sendheartword", method=RequestMethod.POST)
 	@ResponseBody
 	public Msg sendheartword(@RequestParam(value="id", required=true)int id, 
@@ -82,7 +82,7 @@ public class CommentController {
 		System.out.println("name = " + name + " \ncomment = " + comment);
 		commentService.sendcomment(id, name, comment);
 		Msg msg = Msg.success();
-		msg.setMsg("ÎÒÊÕµ½ÄãµÄĞÄÉùÁË£¡");
+		msg.setMsg("æˆ‘æ”¶åˆ°ä½ çš„å¿ƒå£°äº†ï¼");
 		return msg;
 	}
 

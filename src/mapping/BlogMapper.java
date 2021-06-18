@@ -92,7 +92,7 @@ public interface BlogMapper {
 
     List<Blog> selectAll();
     
-    // 新添加的方法
+    // 鏂版坊鍔犵殑鏂规硶
     List<Blog> selectByExampleWithCategory(BlogExample example);
     
     Blog selectByPrimaryKeyWithCategory(Integer id);

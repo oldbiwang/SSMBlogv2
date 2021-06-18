@@ -33,7 +33,7 @@ public class ArticleController {
 	@Autowired
 	private ArticleService articleService;
 
-	// ·µ»ØÎÄÕÂÁĞ±í£¬½øĞĞ ·ÖÒ³
+	// è¿”å›æ–‡ç« åˆ—è¡¨ï¼Œè¿›è¡Œ åˆ†é¡µ
 	@RequestMapping("/articles")
 	@ResponseBody
 	public Msg getArticlesList(
@@ -45,7 +45,7 @@ public class ArticleController {
 		return Msg.success().add("pageInfo", pageInfo);
 	}
 	
-	// »ñÈ¡·ÖÀàĞÅÏ¢
+	// è·å–åˆ†ç±»ä¿¡æ¯
 	@RequestMapping(value="getCategoryName", method=RequestMethod.POST, produces="application/json")
 	@ResponseBody
 	public Msg getCategoryName() {
@@ -55,13 +55,13 @@ public class ArticleController {
 		map.put("category", list);
 		
 		msg.setCode(200);
-		msg.setMsg("·µ»Ø·ÖÀàÃû×Ö£¡");
+		msg.setMsg("è¿”å›åˆ†ç±»åå­—ï¼");
 		msg.setExtend(map);
 		return msg;		
 	}
 	
-	// ºóÌ¨ĞÂ½¨²©¿ÍÎÄÕÂ,ÅĞ¶ÏÊÇ·ñµÇÂ½£¬ÎÒÓÃ  ajax ÇëÇóÎŞ·¨Ìø×ªÒ³Ãæ£¬
-	// Ê¹ÓÃÁËwindow.location='${APP_PATH }/islogin'; ÇëÇóÌø×ª
+	// åå°æ–°å»ºåšå®¢æ–‡ç« ,åˆ¤æ–­æ˜¯å¦ç™»é™†ï¼Œæˆ‘ç”¨  ajax è¯·æ±‚æ— æ³•è·³è½¬é¡µé¢ï¼Œ
+	// ä½¿ç”¨äº†window.location='${APP_PATH }/islogin'; è¯·æ±‚è·³è½¬
 	@RequestMapping(value="/islogin")
 	public String newarticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if(request.getSession().getAttribute("username") != null) {
@@ -71,11 +71,11 @@ public class ArticleController {
 		return "admin/error";
 	}
 	
-	// ĞÂ½¨ÎÄÕÂ
+	// æ–°å»ºæ–‡ç« 
 	@RequestMapping(value="/newarticle")
 	public String editarticle(HttpServletRequest request, HttpServletResponse response) 
 	{
-		//µÃµ½ session µÄÖµ£¬ÅĞ¶ÏÊÇ·ñÒÑ¾­µÇÂ½
+		//å¾—åˆ° session çš„å€¼ï¼Œåˆ¤æ–­æ˜¯å¦å·²ç»ç™»é™†
 		if(request.getSession().getAttribute("username") != null) {
 			String username = request.getSession().getAttribute("username").toString();
 			if(username != null) {
@@ -85,7 +85,7 @@ public class ArticleController {
 		return "admin/error";
 	}
 
-	// ±£´æ md ºÍ HTML µ½Êı¾İ¿â
+	// ä¿å­˜ md å’Œ HTML åˆ°æ•°æ®åº“
 	@RequestMapping(value = "saveArticle", method = RequestMethod.POST)
 	public ModelAndView saveArticle(
 			HttpServletRequest request,
@@ -95,7 +95,7 @@ public class ArticleController {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		// »ñÈ¡ÎÄÕÂ¶ÔÓ¦µÄ ·ÖÀàId
+		// è·å–æ–‡ç« å¯¹åº”çš„ åˆ†ç±»Id
 		Integer categoryId = articleService.getCategoryId(request
 				.getParameter("categoryName"));
 
@@ -110,14 +110,14 @@ public class ArticleController {
 		blog.setCreatedtime(date);
 
 		articleService.save(blog);
-		// »ñµÃÎÄÕÂµÄ±êÌâ£¬±êÌâ½éÉÜ£¬ÈÕÆÚ£¬·ÖÀàµÈĞÅÏ¢
-		map.put("message", "ĞÂ½¨ÎÄÕÂ³É¹¦£¡");
+		// è·å¾—æ–‡ç« çš„æ ‡é¢˜ï¼Œæ ‡é¢˜ä»‹ç»ï¼Œæ—¥æœŸï¼Œåˆ†ç±»ç­‰ä¿¡æ¯
+		map.put("message", "æ–°å»ºæ–‡ç« æˆåŠŸï¼");
 		view.setViewName("admin/newsuccess");
 		view.addObject("map", map);
 		return view;
 	}
 	
-	// ±à¼­ÎÄÕÂ
+	// ç¼–è¾‘æ–‡ç« 
 	@RequestMapping("/edit")
 	public String edit(@RequestParam(value="id", required=true, defaultValue="1") int id, 
 			HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -128,7 +128,7 @@ public class ArticleController {
 		return "admin/error";
 	}
 	
-	// ±£´æĞŞ¸ÄÎÄÕÂ
+	// ä¿å­˜ä¿®æ”¹æ–‡ç« 
 	@RequestMapping(value="/updatearticle", method=RequestMethod.POST)
 	public ModelAndView updatearticle(HttpServletRequest request, HttpServletResponse response,@RequestParam(value = "test-editormd-markdown-doc", required = false) String edmdDoc,
 			@RequestParam(value = "editorhtml", required = false) String edmdHtml) {
@@ -136,9 +136,9 @@ public class ArticleController {
 		String dateStr;
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		// »ñÈ¡Òş²ØÓòÎÄÕÂµÄ id
+		// è·å–éšè—åŸŸæ–‡ç« çš„ id
 		int id = Integer.parseInt(request.getParameter("id"));
-		// »ñÈ¡ÎÄÕÂ¶ÔÓ¦µÄ ·ÖÀàId
+		// è·å–æ–‡ç« å¯¹åº”çš„ åˆ†ç±»Id
 		Integer categoryId = articleService.getCategoryId(request
 				.getParameter("categoryName"));
 
@@ -159,15 +159,15 @@ public class ArticleController {
 		blog.setCreatedtime(date);
 
 		articleService.update(blog);
-		// »ñµÃÎÄÕÂµÄ±êÌâ£¬±êÌâ½éÉÜ£¬ÈÕÆÚ£¬·ÖÀàµÈĞÅÏ¢
-		map.put("message", "ĞŞ¸ÄÎÄÕÂ³É¹¦£¡");
+		// è·å¾—æ–‡ç« çš„æ ‡é¢˜ï¼Œæ ‡é¢˜ä»‹ç»ï¼Œæ—¥æœŸï¼Œåˆ†ç±»ç­‰ä¿¡æ¯
+		map.put("message", "ä¿®æ”¹æ–‡ç« æˆåŠŸï¼");
 		view.setViewName("admin/editsuccess");
 		view.addObject("map", map);
 		return view;
 	}
 	
 	
-	//Í¨¹ı id ²éÕÒÎÄÕÂ²¢·µ»Ø
+	//é€šè¿‡ id æŸ¥æ‰¾æ–‡ç« å¹¶è¿”å›
 	@RequestMapping("/getarticlebyid")
 	@ResponseBody
 	public Blog getarticlebyid(@RequestParam(value="id", defaultValue="1") int id) {
@@ -176,7 +176,7 @@ public class ArticleController {
 	}
 	
 	
-	// ÏÔÊ¾ÎÄÕÂ
+	// æ˜¾ç¤ºæ–‡ç« 
 	@RequestMapping(value="showarticle", method=RequestMethod.GET)
 	public String showarticle(@RequestParam(value="id", defaultValue="1")int id, Model model) {
 		String mdString = articleService.getArticleMdStr(id);
@@ -185,7 +185,7 @@ public class ArticleController {
 		return "showarticle";
 	}
 	
-	// ²à±ßÀ¸ÔÄ¶ÁÄ£Ê½
+	// ä¾§è¾¹æ é˜…è¯»æ¨¡å¼
 	@RequestMapping(value="/showarticlecustomcontanier", method=RequestMethod.GET)
 	public String showarticlecustomcontainer(HttpServletRequest request, HttpServletResponse response,
 			Model model, @RequestParam(value="id", defaultValue="1")int id) {
@@ -195,7 +195,7 @@ public class ArticleController {
 		return "showarticlecustomcontanier";
 	}
 	
-	// É¾³ıÎÄÕÂ
+	// åˆ é™¤æ–‡ç« 
 	@RequestMapping(value="/delete", method=RequestMethod.GET) 
 	public void delete(@RequestParam(value="id", required=true)int id,HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
@@ -206,14 +206,14 @@ public class ArticleController {
 		}
 	}
 	
-	// Ã»ÓĞµÇÂ½µÄÊ±ºò£¬¾Í²»ÄÜÉ¾³ıÎÄÕÂ
+	// æ²¡æœ‰ç™»é™†çš„æ—¶å€™ï¼Œå°±ä¸èƒ½åˆ é™¤æ–‡ç« 
 	@RequestMapping("/deletenologin")
 	public String deletenologin() {
 		return "admin/error";
 	}
 	
 	/*	
-	// ·µ»ØÕı³£Ä£Ê½
+	// è¿”å›æ­£å¸¸æ¨¡å¼
 	@RequestMapping(value="/backhtml", method=RequestMethod.POST)
 	public String backhtml(HttpServletRequest request, HttpServletResponse response,
 			Model model, @RequestParam(value="md", required=true)String md) {
@@ -222,7 +222,7 @@ public class ArticleController {
 		return "showarticle";
 	}*/
 	
-	// ·µ»ØÆÀÂÛÊı×î¶àµÄËÄÆªÎÄÕÂ
+	// è¿”å›è¯„è®ºæ•°æœ€å¤šçš„å››ç¯‡æ–‡ç« 
 	@RequestMapping("/postarticle")
 	@ResponseBody
 	public Msg postarticle() {

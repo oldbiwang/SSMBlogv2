@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils;
 
 public class UploadUtil {
 	public static String uploadImg(String filePath, InputStream in) throws IOException {
-		//»ñÈ¡tomcat µÄ¸ùÄ¿Â¼£¨webapps ÏÂµÄÂ·¾¶£©£¬editormd.root ÔÚweb.xml ÖĞÅäÖÃ
+		//è·å–tomcat çš„æ ¹ç›®å½•ï¼ˆwebapps ä¸‹çš„è·¯å¾„ï¼‰ï¼Œeditormd.root åœ¨web.xml ä¸­é…ç½®
 		String tomcatRootPath = System.getProperty("editormd.root") + "..";
 		String resultPath = tomcatRootPath + filePath;
 		
@@ -19,7 +19,7 @@ public class UploadUtil {
 	}
 
 	/*
-	 * ´´½¨ÎÄ¼ş£¬ Èç¹ûÎÄ¼ş¼Ğ²»´æÔÚ½«±»´´½¨
+	 * åˆ›å»ºæ–‡ä»¶ï¼Œ å¦‚æœæ–‡ä»¶å¤¹ä¸å­˜åœ¨å°†è¢«åˆ›å»º
 	 * */
 	public static File createFile(String resultPath) {
 		File file = new File(resultPath);

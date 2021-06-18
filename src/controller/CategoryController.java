@@ -27,7 +27,7 @@ public class CategoryController {
 	@Autowired
 	private CategoryService categoryService;
 	
-	// tags ·µ»Ø±êÇ©£¨ÎÒ°ÑËüÀí½âÎª·ÖÀà£©
+	// tags è¿”å›æ ‡ç­¾ï¼ˆæˆ‘æŠŠå®ƒç†è§£ä¸ºåˆ†ç±»ï¼‰
 	@RequestMapping(value="/getTags",method=RequestMethod.GET) 
 	@ResponseBody
 	public Msg getTags() {
@@ -36,7 +36,7 @@ public class CategoryController {
 	}
 	
 	
-	// ·ÖÀàµÄºóÌ¨¹ÜÀí
+	// åˆ†ç±»çš„åå°ç®¡ç†
 	@RequestMapping(value="/tagadmin") 
 	public String tagadmin(HttpServletRequest request, HttpServletResponse response) {
 		String username = null;
@@ -50,16 +50,16 @@ public class CategoryController {
 		return "admin/tagadmin";
 	}
 	
-	// ĞÂ½¨·ÖÀà
+	// æ–°å»ºåˆ†ç±»
 	@RequestMapping(value="/newtag", method=RequestMethod.POST)
 	public String newtag(@RequestParam(value="name", required=true) String name,
 			@RequestParam(value="level", required=true)String level,Model model) {
 		categoryService.newtag(name, level);
-		model.addAttribute("msg", "ĞÂ½¨·ÖÀà³É¹¦£¡");
+		model.addAttribute("msg", "æ–°å»ºåˆ†ç±»æˆåŠŸï¼");
 		return "admin/newtagsuccess";
 	}
 	
-	// É¾³ı·ÖÀà
+	// åˆ é™¤åˆ†ç±»
 	@RequestMapping(value="deletetag", method=RequestMethod.GET) 
 	@ResponseBody
 	public Msg deletetag(HttpServletRequest request, HttpServletResponse response,
@@ -69,10 +69,10 @@ public class CategoryController {
 			username = request.getSession().getAttribute("username").toString();
 		}
 		if(username == null) {
-			return Msg.fail().add("msg", "ÄãÃ»ÓĞµÇÂ½");
+			return Msg.fail().add("msg", "ä½ æ²¡æœ‰ç™»é™†");
 		}
 		categoryService.deltag(id);
-		return Msg.success().add("msg", "É¾³ı·ÖÀà³É¹¦£¡");
+		return Msg.success().add("msg", "åˆ é™¤åˆ†ç±»æˆåŠŸï¼");
 	}
 	
 	@RequestMapping("tag")
@@ -81,7 +81,7 @@ public class CategoryController {
 		return "tag";
 	}
 	
-	// ·µ»Ø¸Ã·ÖÀàËùÓĞµÄÎÄÕÂ
+	// è¿”å›è¯¥åˆ†ç±»æ‰€æœ‰çš„æ–‡ç« 
 	@RequestMapping(value="/tagarticle", method=RequestMethod.GET)
 	@ResponseBody
 	public Msg tagarticle(@RequestParam("id") int id,

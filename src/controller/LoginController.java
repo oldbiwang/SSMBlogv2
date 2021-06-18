@@ -38,7 +38,7 @@ public class LoginController {
 			return "admin/loginfail";
 	}
 	
-	// ÍË³öµÇÂ½
+	// é€€å‡ºç™»é™†
 	@RequestMapping("logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		request.getSession().removeAttribute("username");
