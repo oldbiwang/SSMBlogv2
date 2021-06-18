@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,15 +20,21 @@ import service.CommentService;
 
 @Controller
 public class CommentController {
+	private final CommentService commentService;
+
+	private final HttpSession session;
+
 	@Autowired
-	private CommentService commentService;
-	
+	public CommentController(CommentService commentService, HttpSession session) {
+		this.commentService = commentService;
+		this.session = session;
+	}
+
 	// 提交评论
 	@RequestMapping(value="/sendcomment", method=RequestMethod.POST)
 	@ResponseBody
 	public Msg sendcomment(@RequestParam(value="id", required=true)int id, 
 			@RequestParam("name") String name, @RequestParam("comment") String comment) throws ParseException {
-		System.out.println("name = " + name + " \ncomment = " + comment);
 		commentService.sendcomment(id, name, comment);
 		Msg msg = Msg.success();
 		msg.setMsg("提交评论成功！");
@@ -53,10 +60,10 @@ public class CommentController {
 	
 	// 评论后台管理
 	@RequestMapping("/commentback")
-	public String commentback(HttpServletRequest request,HttpServletResponse response) {
+	public String commentback() {
 		//得到 session 的值，判断是否已经登陆
-		if(request.getSession().getAttribute("username") != null) {
-			String username = request.getSession().getAttribute("username").toString();
+		if(session.getAttribute("username") != null) {
+			String username = session.getAttribute("username").toString();
 			if(username != null) {
 				return "admin/commentadmin";
 			}

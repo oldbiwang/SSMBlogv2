@@ -15,9 +15,13 @@ import service.LoginService;
 
 @Controller
 public class LoginController {
+	private final LoginService service;
+
 	@Autowired
-	private LoginService service;
-	
+	public LoginController(LoginService service) {
+		this.service = service;
+	}
+
 	@RequestMapping("/login")
 	public String login() {
 		return "admin/login";
