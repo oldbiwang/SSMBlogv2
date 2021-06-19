@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import service.CategoryService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -54,14 +52,12 @@ public class CategoryController {
   }
 
   // 新建分类
-  @RequestMapping(value = "/newtag", method = RequestMethod.POST)
-  public String newtag(
-      @RequestParam(value = "name", required = true) String name,
-      @RequestParam(value = "level", required = true) String level,
-      Model model) {
+  @RequestMapping(value = "/newTag", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg newtag(
+      @RequestParam(value = "name") String name, @RequestParam(value = "level") String level) {
     categoryService.newtag(name, level);
-    model.addAttribute("msg", "新建分类成功！");
-    return "admin/newtagsuccess";
+    return Msg.success("新建分类成功!");
   }
 
   // 删除分类

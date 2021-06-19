@@ -30,7 +30,7 @@
 <body>
 	<header>
 		<ul class="navul">
-				<li class="navli"><a href="${APP_PATH }/validatellogin">文章管理</a></li>
+				<li class="navli"><a href="${APP_PATH }/admin/">文章管理</a></li>
 				<li class="navli"><a href="${APP_PATH }/commentback">评论管理</a></li>
 				<li class="navli"><a href="${APP_PATH }/tagadmin">分类管理</a></li>
 				<li class="navli"><a href="${APP_PATH }/logout">log out</a></li>
