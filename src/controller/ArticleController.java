@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import entity.ArticleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -92,34 +93,21 @@ public class ArticleController {
   }
 
   // 保存 md 和 HTML 到数据库
-  @RequestMapping(value = "saveArticle", method = RequestMethod.POST)
-  public ModelAndView saveArticle(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      @RequestParam(value = "test-editormd-markdown-doc", required = false) String edmdDoc,
-      @RequestParam(value = "editorhtml", required = false) String edmdHtml) {
-    ModelAndView view = new ModelAndView();
-    Map<String, Object> map = new HashMap<String, Object>();
-
-    // 获取文章对应的 分类Id
-    Integer categoryId = articleService.getCategoryId(request.getParameter("categoryName"));
-
+  @RequestMapping(value = "/saveArticle", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg saveArticle(ArticleVO articleVO) {
+    Integer categoryId = articleService.getCategoryId(articleVO.getCategoryName());
     Blog blog = new Blog();
     blog.setCategoryid(categoryId);
-    blog.setContent(edmdHtml);
-    blog.setMd(edmdDoc);
-    blog.setTitle(request.getParameter("title"));
-    blog.setTitleintro(request.getParameter("titleIntro"));
-    String dateStr = request.getParameter("createdtime").replace('/', '-');
-    Date date = DateUtil.fomatDate(dateStr);
-    blog.setCreatedtime(date);
+
+    blog.setContent(articleVO.getEditorHtml());
+    blog.setMd(articleVO.getEditorMarkdown());
+    blog.setTitle(articleVO.getTitle());
+    blog.setTitleintro(articleVO.getTitleIntro());
+    blog.setCreatedtime(articleVO.getCreatedTime());
 
     articleService.save(blog);
-    // 获得文章的标题，标题介绍，日期，分类等信息
-    map.put("message", "新建文章成功！");
-    view.setViewName("admin/newsuccess");
-    view.addObject("map", map);
-    return view;
+    return Msg.success("新建文章成功!");
   }
 
   // 编辑文章
@@ -133,43 +121,22 @@ public class ArticleController {
     return "admin/error";
   }
 
-  // 保存修改文章
-  @RequestMapping(value = "/updatearticle", method = RequestMethod.POST)
-  public ModelAndView updatearticle(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      @RequestParam(value = "test-editormd-markdown-doc", required = false) String edmdDoc,
-      @RequestParam(value = "editorhtml", required = false) String edmdHtml) {
-    ModelAndView view = new ModelAndView();
-    String dateStr;
-    Map<String, Object> map = new HashMap<String, Object>();
+  @RequestMapping(value = "/updateArticle", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg updateArticle(ArticleVO articleVO) {
 
-    // 获取隐藏域文章的 id
-    int id = Integer.parseInt(request.getParameter("id"));
     // 获取文章对应的 分类Id
-    Integer categoryId = articleService.getCategoryId(request.getParameter("categoryName"));
+    Integer categoryId = articleService.getCategoryId(articleVO.getCategoryName());
 
     Blog blog = new Blog();
-    blog.setId(id);
+    blog.setId(articleVO.getId());
     blog.setCategoryid(categoryId);
-    blog.setContent(edmdHtml);
-    blog.setMd(edmdDoc);
-    blog.setTitle(request.getParameter("title"));
-    blog.setTitleintro(request.getParameter("titleIntro"));
-    if (request.getParameter("createdtime") != null) {
-      dateStr = request.getParameter("createdtime").replace('/', '-');
-    } else {
-      dateStr = new String("1996-2-10");
-    }
-    Date date = DateUtil.fomatDate(dateStr);
-    blog.setCreatedtime(date);
-
-    articleService.update(blog);
-    // 获得文章的标题，标题介绍，日期，分类等信息
-    map.put("message", "修改文章成功！");
-    view.setViewName("admin/editsuccess");
-    view.addObject("map", map);
-    return view;
+    blog.setContent(articleVO.getEditorHtml());
+    blog.setMd(articleVO.getEditorMarkdown());
+    blog.setTitle(articleVO.getTitle());
+    blog.setTitleintro(articleVO.getTitleIntro());
+    blog.setCreatedtime(articleVO.getCreatedTime());
+    return Msg.success("修改成功!");
   }
 
   // 通过 id 查找文章并返回

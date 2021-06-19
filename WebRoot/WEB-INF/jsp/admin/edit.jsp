@@ -11,16 +11,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>王锐鹏博客</title>
 	 <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="${APP_PATH}/css/bootstrap.min.css" rel="stylesheet">
      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-	<link href="js/editormd/css/editormd.min.css" rel="stylesheet"
+    <script src="${APP_PATH}/js/bootstrap.min.js"></script>
+	<link href="${APP_PATH}/js/editormd/css/editormd.min.css" rel="stylesheet"
 		type="text/css" />
 	<script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
-	<script src="js/editormd/editormd.js"></script>
-	<script src="js/editormd/editormd.amd.js"></script>
+	<script src="${APP_PATH}/js/editormd/editormd.js"></script>
+	<script src="${APP_PATH}/js/editormd/editormd.amd.js"></script>
 
 	<style>
 		h1{
@@ -32,47 +32,48 @@
 <body>
 	<h1>编辑保存文章</h1>
 	<br>
-	<form class="form-horizontal" action="<%=path%>/updatearticle" method="post" style="text-align:center">
-		  <input type="hidden" name="id" value="${blogid }"/> 
-		  <div class="form-group">
-		    <label for="title" class="col-sm-2 control-label">title</label>
-		    <div class="col-sm-8">
-		      <input type="text" class="form-control" id="title" name="title" placeholder="title"
-		      value="${blog.title }">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="titleIntro" class="col-sm-2 control-label">titleIntro</label>
-		    <div class="col-sm-8">
-		      <input type="text" class="form-control" id="titleIntro" name="titleIntro">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="createdtime" class="col-sm-2 control-label">createdtime</label>
-		    <div class="col-sm-8">
-		      <input type="date" class="form-control" id="createdtime" name="createdtime">
-		    </div>
-		  </div>
-		  
-		 <div class="form-group">
-		    <label for="categoryName" class="col-sm-2 control-label">categoryName</label>
-		    <div class="col-sm-8">
-		      <select class="form-control" id="categoryName" name="categoryName">
-		      </select>
-		    </div>
-		    <button type="submit" class="btn btn-default">保存修改</button>
-		  </div>
+	<form class="form-horizontal" style="text-align:center">
+		<input type="hidden" name="id" value="${blogid }"/>
+		<div class="form-group">
+			<label for="title" class="col-sm-2 control-label">title</label>
+			<div class="col-sm-8">
+				<input type="text" class="form-control" id="title" name="title" placeholder="文章标题"
+					   value="${blog.title }">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="titleIntro" class="col-sm-2 control-label">文章简介</label>
+			<div class="col-sm-8">
+				<input type="text" class="form-control" id="titleIntro" name="titleIntro" placeholder="文章简介">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="createdTime" class="col-sm-2 control-label">创建时间</label>
+			<div class="col-sm-8">
+				<input type="date" class="form-control" id="createdTime" name="createdTime">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="categoryName" class="col-sm-2 control-label">分类名字</label>
+			<div class="col-sm-8">
+				<select class="form-control" id="categoryName" name="categoryName">
+				</select>
+			</div>
+			<button type="button" class="btn btn-default" id="updateArticle">保存修改</button>
+		</div>
 		<!-- editormd start -->
 		<div id="test-editormd" class="editormd form-control form-group" style="margin: 2px;">
-			<textarea id="editormd" name="test-editormd-markdown-doc" 
-				class="editormd-markdown-textarea"></textarea>
+			<textarea id="editorMarkdown" name="editorMarkdown"
+					  class="editormd-markdown-textarea"></textarea>
 			<!-- 第二个隐藏文本域，用来构造生成的HTML代码，方便表单POST提交，这里的name可以任意取，后台接受时以这个name键为准 -->
 			<!-- html textarea 需要开启配置项 saveHTMLToTextarea == true -->
-			<textarea id="editorhtml" name="editorhtml" class="editormd-html-textarea"></textarea>
+			<textarea id="editorHtml" name="editorHtml" class="editormd-html-textarea"></textarea>
 		</div>
-		<!-- editormd end -->	
+		<!-- editormd end -->
 	</form>
-	
+
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script type="text/javascript">
     	var testEditor;
 		testEditor=$(function() {
@@ -94,6 +95,31 @@
 			 codeFold : true
 			});
 		});
+
+		$('#updateArticle').click(function () {
+
+			// 取出表单里面的数据
+			var formData = $('.form-horizontal').serialize();
+			// 使用正则删除 &test-editormd-html-code 后面的内容
+			var result = formData.match(/.*(?=&test-editormd-html-code)/)
+
+			$.ajax({
+				type: "POST",
+				url: "${APP_PATH}/updateArticle",
+				// 取出正则的结果，发送数据
+				data: result[0],
+				success: function (data) {
+					if (data.code == 100) {
+						swal({
+							text: data.msg
+						});
+						setTimeout(function () {
+						}, 3000);
+						window.location.href = "${APP_PATH}/admin/";
+					}
+				}
+			})
+		});
 	</script>
 	<script type="text/javascript">
 		$(function() {
@@ -113,8 +139,8 @@
 				success: function(result) {
 					 $("#title").val(result.title);
 					 $("#titleIntro").val(result.titleintro);
-		      		 $("#createdtime").val(showdate(result.createdtime));
-		      		 $("#editormd").val(result.md);
+		      		 $("#createdTime").val(showdate(result.createdtime));
+		      		 $("#editorMarkdown").val(result.md);
 				}
 			});
 		}
