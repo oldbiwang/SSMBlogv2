@@ -24,18 +24,18 @@ public class LoginService {
 		if(usersMapper.selectByExample(example) != null) {
 			user = usersMapper.selectByExample(example).get(0);
 		} else {
-			// ÓÃ»§²»´æÔÚ£¬µÇÂ½Ê§°Ü£¡
+			// ç”¨æˆ·ä¸å­˜åœ¨ï¼Œç™»é™†å¤±è´¥ï¼
 			return false;
 		}
 	
-		// »ñÈ¡Êı¾İ¿âµÄÃÜÂë
+		// è·å–æ•°æ®åº“çš„å¯†ç 
 		String passwordDB = user.getPassword();
-		// password md5 ¼ÓÃÜ
+		// password md5 åŠ å¯†
 		String passmd5 = MD5.getMD5(password);
 		System.out.println(passmd5);
 		if(passwordDB.equals(passmd5))
 			return true;
-		// ÃÜÂë´íÎó£¡
+		// å¯†ç é”™è¯¯ï¼
 		return false;
 	}
 	

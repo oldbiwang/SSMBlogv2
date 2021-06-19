@@ -23,27 +23,27 @@ public class ArticleService {
 	@Autowired
 	private CommentMapper commentMapper;
 	
-	// »ñµÃËùÓĞµÄÎÄÕÂĞÅÏ¢²»´ø·ÖÀàĞÅÏ¢
+	// è·å¾—æ‰€æœ‰çš„æ–‡ç« ä¿¡æ¯ä¸å¸¦åˆ†ç±»ä¿¡æ¯
 	public List<Blog> getAllArticle() {
 		return blogMapper.selectAll();
 	}
     
-	//Í¨¹ıÖ÷¼ü»ñÈ¡²©¿ÍÎÄÕÂ´ø·ÖÀàĞÅÏ¢
+	//é€šè¿‡ä¸»é”®è·å–åšå®¢æ–‡ç« å¸¦åˆ†ç±»ä¿¡æ¯
     public Blog selectByPrimaryKeyWithCategory(Integer id) {
     	return blogMapper.selectByPrimaryKeyWithCategory(id);
     }
 
-    //»ñÈ¡ËùÓĞµÄÎÄÕÂ´ø·ÖÀàĞÅÏ¢
+    //è·å–æ‰€æœ‰çš„æ–‡ç« å¸¦åˆ†ç±»ä¿¡æ¯
 	public List<Blog> getAll() {
 		return blogMapper.selectByExampleWithCategory(null);
 	}
 
-	// »ñÈ¡ËùÓĞµÄ·ÖÀàĞÅÏ¢
+	// è·å–æ‰€æœ‰çš„åˆ†ç±»ä¿¡æ¯
 	public List<Category> getCategoryName() {
 		return categoryMapper.selectByExample(null);
 	}
 
-	// µÃµ½·ÖÀàÃûËù¶ÔÓ¦µÄ ID Öµ
+	// å¾—åˆ°åˆ†ç±»åæ‰€å¯¹åº”çš„ ID å€¼
 	public Integer getCategoryId(String categoryName) {
 		CategoryExample example = new CategoryExample();
 		example.createCriteria().andNameEqualTo(categoryName);
@@ -52,16 +52,16 @@ public class ArticleService {
 		return id;
 	}
 
-	// ´æ´¢Ò»Æª²©¿Í
+	// å­˜å‚¨ä¸€ç¯‡åšå®¢
 	public void save(Blog blog) {
 		blogMapper.insert(blog);
 	}
 
-	// »ñÈ¡ id Ëù¶ÔÓ¦²©¿ÍÎÄÕÂ´¢´æÔÚÊı¾İ¿âµÄ md 
+	// è·å– id æ‰€å¯¹åº”åšå®¢æ–‡ç« å‚¨å­˜åœ¨æ•°æ®åº“çš„ md 
 	public String getArticleMdStr(int id) {
 		Blog blog = blogMapper.selectByPrimaryKeyWithCategory(id);
 		String md = blog.getMd();
-		// md Îª null,·µ»Ø¿Õ×Ö·û´®
+		// md ä¸º null,è¿”å›ç©ºå­—ç¬¦ä¸²
 		if(md == null)
 			return "";
 		return md;
@@ -87,7 +87,7 @@ public class ArticleService {
 	public List<Blog> postarticle(List<Blog> list) {
 		List<Blog> listRtnBlogs = new ArrayList<Blog>();
 		if(list != null && list.size() > 4) {
-			// °ÑÆÀÂÛÊı×î´óµÄËÄÆªÎÄÕÂÈ¡³öÀ´
+			// æŠŠè¯„è®ºæ•°æœ€å¤§çš„å››ç¯‡æ–‡ç« å–å‡ºæ¥
 			for(int i = 0 ; i < 4; i++) {
 			
 				for(int j = i + 1; j < list.size(); j++) {

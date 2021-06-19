@@ -18,15 +18,15 @@ public class CommentService {
 	@Autowired
 	private CommentMapper commentMapper;
 
-	// 保存评论
+	// 淇濆瓨璇勮
 	public void sendcomment(int id, String name, String comment) throws ParseException {
 		if(name.equals("")) {
-			name = new String("匿名");
+			name = new String("鍖垮悕");
 		} 
 		if(comment.equals("")) {
-			comment = new String("啥都没留下！");
+			comment = new String("鍟ラ兘娌＄暀涓嬶紒");
 		}
-		// 评论时间
+		// 璇勮鏃堕棿
 		Date now = new Date();
 	    
 	    Comment comment2 = new Comment();

@@ -1,11 +1,10 @@
 package controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import entity.Blog;
+import entity.Category;
+import entity.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,83 +12,85 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-
 import service.CategoryService;
-import entity.Blog;
-import entity.Category;
-import entity.Msg;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class CategoryController {
-	@Autowired
-	private CategoryService categoryService;
-	
-	// tags ·µ»Ø±êÇ©£¨ÎÒ°ÑËüÀí½âÎª·ÖÀà£©
-	@RequestMapping(value="/getTags",method=RequestMethod.GET) 
-	@ResponseBody
-	public Msg getTags() {
-		List <Category> tags = categoryService.getCategory();
-		return Msg.success().add("tags", tags);
-	}
-	
-	
-	// ·ÖÀàµÄºóÌ¨¹ÜÀí
-	@RequestMapping(value="/tagadmin") 
-	public String tagadmin(HttpServletRequest request, HttpServletResponse response) {
-		String username = null;
-		if(request.getSession().getAttribute("username") != null) {
-			username = request.getSession().getAttribute("username").toString();
-		}
-		
-		if(username == null) {
-			return "admin/error";
-		}
-		return "admin/tagadmin";
-	}
-	
-	// ĞÂ½¨·ÖÀà
-	@RequestMapping(value="/newtag", method=RequestMethod.POST)
-	public String newtag(@RequestParam(value="name", required=true) String name,
-			@RequestParam(value="level", required=true)String level,Model model) {
-		categoryService.newtag(name, level);
-		model.addAttribute("msg", "ĞÂ½¨·ÖÀà³É¹¦£¡");
-		return "admin/newtagsuccess";
-	}
-	
-	// É¾³ı·ÖÀà
-	@RequestMapping(value="deletetag", method=RequestMethod.GET) 
-	@ResponseBody
-	public Msg deletetag(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam(value="id", required=true)int id) {
-		String username = null;
-		if(request.getSession().getAttribute("username") != null) {
-			username = request.getSession().getAttribute("username").toString();
-		}
-		if(username == null) {
-			return Msg.fail().add("msg", "ÄãÃ»ÓĞµÇÂ½");
-		}
-		categoryService.deltag(id);
-		return Msg.success().add("msg", "É¾³ı·ÖÀà³É¹¦£¡");
-	}
-	
-	@RequestMapping("tag")
-	public String tag(@RequestParam("id")int id, Model model) {
-		model.addAttribute("id", id);
-		return "tag";
-	}
-	
-	// ·µ»Ø¸Ã·ÖÀàËùÓĞµÄÎÄÕÂ
-	@RequestMapping(value="/tagarticle", method=RequestMethod.GET)
-	@ResponseBody
-	public Msg tagarticle(@RequestParam("id") int id,
-			@RequestParam(value = "pn", defaultValue = "1") Integer pn,
-			Model model) {
-		PageHelper.startPage(pn, 5);
-		List<Blog> list = categoryService.getTagArticles(id);
-		PageInfo<Blog> pageInfo = new PageInfo<>(list, 5);
-		return Msg.success().add("pageInfo", pageInfo);
-	}
+  private final CategoryService categoryService;
+
+  private final HttpSession session;
+
+  @Autowired
+  public CategoryController(CategoryService categoryService, HttpSession session) {
+    this.categoryService = categoryService;
+    this.session = session;
+  }
+
+  // tags è¿”å›æ ‡ç­¾ï¼ˆæˆ‘æŠŠå®ƒç†è§£ä¸ºåˆ†ç±»ï¼‰
+  @RequestMapping(value = "/getTags", method = RequestMethod.GET)
+  @ResponseBody
+  public Msg getTags() {
+    List<Category> tags = categoryService.getCategory();
+    return Msg.success().add("tags", tags);
+  }
+
+  // åˆ†ç±»çš„åå°ç®¡ç†
+  @RequestMapping(value = "/tagadmin")
+  public String tagadmin() {
+    String username = null;
+    if (session.getAttribute("username") != null) {
+      username = session.getAttribute("username").toString();
+    }
+
+    if (username == null) {
+      return "admin/error";
+    }
+    return "admin/tagadmin";
+  }
+
+  // æ–°å»ºåˆ†ç±»
+  @RequestMapping(value = "/newTag", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg newtag(
+      @RequestParam(value = "name") String name, @RequestParam(value = "level") String level) {
+    categoryService.newtag(name, level);
+    return Msg.success("æ–°å»ºåˆ†ç±»æˆåŠŸ!");
+  }
+
+  // åˆ é™¤åˆ†ç±»
+  @RequestMapping(value = "deletetag", method = RequestMethod.GET)
+  @ResponseBody
+  public Msg deletetag(@RequestParam(value = "id", required = true) int id) {
+    String username = null;
+    if (session.getAttribute("username") != null) {
+      username = session.getAttribute("username").toString();
+    }
+    if (username == null) {
+      return Msg.fail().add("msg", "ä½ æ²¡æœ‰ç™»é™†");
+    }
+    categoryService.deltag(id);
+    return Msg.success().add("msg", "åˆ é™¤åˆ†ç±»æˆåŠŸï¼");
+  }
+
+  @RequestMapping("tag")
+  public String tag(@RequestParam("id") int id, Model model) {
+    model.addAttribute("id", id);
+    return "tag";
+  }
+
+  // è¿”å›è¯¥åˆ†ç±»æ‰€æœ‰çš„æ–‡ç« 
+  @RequestMapping(value = "/tagarticle", method = RequestMethod.GET)
+  @ResponseBody
+  public Msg tagarticle(
+      @RequestParam("id") int id,
+      @RequestParam(value = "pn", defaultValue = "1") Integer pn,
+      Model model) {
+    PageHelper.startPage(pn, 5);
+    List<Blog> list = categoryService.getTagArticles(id);
+    PageInfo<Blog> pageInfo = new PageInfo<>(list, 5);
+    return Msg.success().add("pageInfo", pageInfo);
+  }
 }

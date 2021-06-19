@@ -9,7 +9,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import entity.ArticleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,215 +32,184 @@ import utils.DateUtil;
 
 @Controller
 public class ArticleController {
-	@Autowired
-	private ArticleService articleService;
+  private final ArticleService articleService;
 
-	// ·µ»ØÎÄÕÂÁĞ±í£¬½øĞĞ ·ÖÒ³
-	@RequestMapping("/articles")
-	@ResponseBody
-	public Msg getArticlesList(
-			@RequestParam(value = "pn", defaultValue = "1") Integer pn) throws ParseException {
-		PageHelper.startPage(pn, 5);
-		List<Blog> articles = articleService.getAll();
+  private final HttpSession session;
 
-		PageInfo<Blog> pageInfo = new PageInfo<>(articles, 5);
-		return Msg.success().add("pageInfo", pageInfo);
-	}
-	
-	// »ñÈ¡·ÖÀàĞÅÏ¢
-	@RequestMapping(value="getCategoryName", method=RequestMethod.POST, produces="application/json")
-	@ResponseBody
-	public Msg getCategoryName() {
-		Msg msg = new Msg();
-		List<Category> list = articleService.getCategoryName();
-		Map<String, Object> map = new HashMap<>();
-		map.put("category", list);
-		
-		msg.setCode(200);
-		msg.setMsg("·µ»Ø·ÖÀàÃû×Ö£¡");
-		msg.setExtend(map);
-		return msg;		
-	}
-	
-	// ºóÌ¨ĞÂ½¨²©¿ÍÎÄÕÂ,ÅĞ¶ÏÊÇ·ñµÇÂ½£¬ÎÒÓÃ  ajax ÇëÇóÎŞ·¨Ìø×ªÒ³Ãæ£¬
-	// Ê¹ÓÃÁËwindow.location='${APP_PATH }/islogin'; ÇëÇóÌø×ª
-	@RequestMapping(value="/islogin")
-	public String newarticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if(request.getSession().getAttribute("username") != null) {
-			System.out.println("username = " + request.getSession().getAttribute("username"));
-			return "redirect:/newarticle";
-		}
-		return "admin/error";
-	}
-	
-	// ĞÂ½¨ÎÄÕÂ
-	@RequestMapping(value="/newarticle")
-	public String editarticle(HttpServletRequest request, HttpServletResponse response) 
-	{
-		//µÃµ½ session µÄÖµ£¬ÅĞ¶ÏÊÇ·ñÒÑ¾­µÇÂ½
-		if(request.getSession().getAttribute("username") != null) {
-			String username = request.getSession().getAttribute("username").toString();
-			if(username != null) {
-				return "admin/newblog";
-			}
-		}
-		return "admin/error";
-	}
+  @Autowired
+  public ArticleController(ArticleService articleService, HttpSession session) {
+    this.articleService = articleService;
+    this.session = session;
+  }
 
-	// ±£´æ md ºÍ HTML µ½Êı¾İ¿â
-	@RequestMapping(value = "saveArticle", method = RequestMethod.POST)
-	public ModelAndView saveArticle(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(value = "test-editormd-markdown-doc", required = false) String edmdDoc,
-			@RequestParam(value = "editorhtml", required = false) String edmdHtml) {
-		ModelAndView view = new ModelAndView();
-		Map<String, Object> map = new HashMap<String, Object>();
+  // è¿”å›æ–‡ç« åˆ—è¡¨ï¼Œè¿›è¡Œ åˆ†é¡µ
+  @RequestMapping("/articles")
+  @ResponseBody
+  public Msg getArticlesList(@RequestParam(value = "pn", defaultValue = "1") Integer pn)
+      throws ParseException {
+    PageHelper.startPage(pn, 5);
+    List<Blog> articles = articleService.getAll();
 
-		// »ñÈ¡ÎÄÕÂ¶ÔÓ¦µÄ ·ÖÀàId
-		Integer categoryId = articleService.getCategoryId(request
-				.getParameter("categoryName"));
+    PageInfo<Blog> pageInfo = new PageInfo<>(articles, 5);
+    return Msg.success().add("pageInfo", pageInfo);
+  }
 
-		Blog blog = new Blog();
-		blog.setCategoryid(categoryId);
-		blog.setContent(edmdHtml);
-		blog.setMd(edmdDoc);
-		blog.setTitle(request.getParameter("title"));
-		blog.setTitleintro(request.getParameter("titleIntro"));
-		String dateStr = request.getParameter("createdtime").replace('/', '-');
-		Date date = DateUtil.fomatDate(dateStr);
-		blog.setCreatedtime(date);
+  // è·å–åˆ†ç±»ä¿¡æ¯
+  @RequestMapping(
+      value = "getCategoryName",
+      method = RequestMethod.POST,
+      produces = "application/json")
+  @ResponseBody
+  public Msg getCategoryName() {
+    Msg msg = new Msg();
+    List<Category> list = articleService.getCategoryName();
+    Map<String, Object> map = new HashMap<>();
+    map.put("category", list);
 
-		articleService.save(blog);
-		// »ñµÃÎÄÕÂµÄ±êÌâ£¬±êÌâ½éÉÜ£¬ÈÕÆÚ£¬·ÖÀàµÈĞÅÏ¢
-		map.put("message", "ĞÂ½¨ÎÄÕÂ³É¹¦£¡");
-		view.setViewName("admin/newsuccess");
-		view.addObject("map", map);
-		return view;
-	}
-	
-	// ±à¼­ÎÄÕÂ
-	@RequestMapping("/edit")
-	public String edit(@RequestParam(value="id", required=true, defaultValue="1") int id, 
-			HttpServletRequest request, HttpServletResponse response, Model model) {
-		if(request.getSession().getAttribute("username")  != null) {
-			model.addAttribute("blogid", id);
-			return "admin/edit";
-		}	
-		return "admin/error";
-	}
-	
-	// ±£´æĞŞ¸ÄÎÄÕÂ
-	@RequestMapping(value="/updatearticle", method=RequestMethod.POST)
-	public ModelAndView updatearticle(HttpServletRequest request, HttpServletResponse response,@RequestParam(value = "test-editormd-markdown-doc", required = false) String edmdDoc,
-			@RequestParam(value = "editorhtml", required = false) String edmdHtml) {
-		ModelAndView view = new ModelAndView();
-		String dateStr;
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		// »ñÈ¡Òş²ØÓòÎÄÕÂµÄ id
-		int id = Integer.parseInt(request.getParameter("id"));
-		// »ñÈ¡ÎÄÕÂ¶ÔÓ¦µÄ ·ÖÀàId
-		Integer categoryId = articleService.getCategoryId(request
-				.getParameter("categoryName"));
+    msg.setCode(200);
+    msg.setMsg("è¿”å›åˆ†ç±»åå­—ï¼");
+    msg.setExtend(map);
+    return msg;
+  }
 
-		Blog blog = new Blog();
-		blog.setId(id);
-		blog.setCategoryid(categoryId);
-		blog.setContent(edmdHtml);
-		blog.setMd(edmdDoc);
-		blog.setTitle(request.getParameter("title"));
-		blog.setTitleintro(request.getParameter("titleIntro"));
-		if(request.getParameter("createdtime") != null)
-		{
-			dateStr = request.getParameter("createdtime").replace('/', '-');
-		} else {
-			dateStr = new String("1996-2-10");
-		}
-		Date date = DateUtil.fomatDate(dateStr);
-		blog.setCreatedtime(date);
+  // åå°æ–°å»ºåšå®¢æ–‡ç« ,åˆ¤æ–­æ˜¯å¦ç™»é™†ï¼Œæˆ‘ç”¨  ajax è¯·æ±‚æ— æ³•è·³è½¬é¡µé¢ï¼Œ
+  // ä½¿ç”¨äº†window.location='${APP_PATH }/islogin'; è¯·æ±‚è·³è½¬
+  @RequestMapping(value = "/islogin")
+  public String newarticle() throws IOException {
+    if (session.getAttribute("username") != null) {
+      return "redirect:/newarticle";
+    }
+    return "admin/error";
+  }
 
-		articleService.update(blog);
-		// »ñµÃÎÄÕÂµÄ±êÌâ£¬±êÌâ½éÉÜ£¬ÈÕÆÚ£¬·ÖÀàµÈĞÅÏ¢
-		map.put("message", "ĞŞ¸ÄÎÄÕÂ³É¹¦£¡");
-		view.setViewName("admin/editsuccess");
-		view.addObject("map", map);
-		return view;
-	}
-	
-	
-	//Í¨¹ı id ²éÕÒÎÄÕÂ²¢·µ»Ø
-	@RequestMapping("/getarticlebyid")
-	@ResponseBody
-	public Blog getarticlebyid(@RequestParam(value="id", defaultValue="1") int id) {
-		Blog blog = articleService.selectBlogById(id);
-		return blog;
-	}
-	
-	
-	// ÏÔÊ¾ÎÄÕÂ
-	@RequestMapping(value="showarticle", method=RequestMethod.GET)
-	public String showarticle(@RequestParam(value="id", defaultValue="1")int id, Model model) {
-		String mdString = articleService.getArticleMdStr(id);
-		model.addAttribute("mdString", mdString);
-		model.addAttribute("id", id);
-		return "showarticle";
-	}
-	
-	// ²à±ßÀ¸ÔÄ¶ÁÄ£Ê½
-	@RequestMapping(value="/showarticlecustomcontanier", method=RequestMethod.GET)
-	public String showarticlecustomcontainer(HttpServletRequest request, HttpServletResponse response,
-			Model model, @RequestParam(value="id", defaultValue="1")int id) {
-		String customMd = articleService.getArticleMdStr(id);
-		model.addAttribute("customMd", customMd);
-		model.addAttribute("id", id);
-		return "showarticlecustomcontanier";
-	}
-	
-	// É¾³ıÎÄÕÂ
-	@RequestMapping(value="/delete", method=RequestMethod.GET) 
-	public void delete(@RequestParam(value="id", required=true)int id,HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		if(request.getSession().getAttribute("username") != null) {
-			articleService.deleteArticleById(id);
-		} else {
-			response.sendRedirect("deletenologin");
-		}
-	}
-	
-	// Ã»ÓĞµÇÂ½µÄÊ±ºò£¬¾Í²»ÄÜÉ¾³ıÎÄÕÂ
-	@RequestMapping("/deletenologin")
-	public String deletenologin() {
-		return "admin/error";
-	}
-	
-	/*	
-	// ·µ»ØÕı³£Ä£Ê½
-	@RequestMapping(value="/backhtml", method=RequestMethod.POST)
-	public String backhtml(HttpServletRequest request, HttpServletResponse response,
-			Model model, @RequestParam(value="md", required=true)String md) {
-		System.out.println("backmd = " + md);
-		model.addAttribute("backmd", md);
-		return "showarticle";
-	}*/
-	
-	// ·µ»ØÆÀÂÛÊı×î¶àµÄËÄÆªÎÄÕÂ
-	@RequestMapping("/postarticle")
-	@ResponseBody
-	public Msg postarticle() {
-		List<Blog> list = articleService.getAll();
-		List<Blog> postList = articleService.postarticle(list);
-		System.out.println("size = " + postList.size());
-		return Msg.success().add("postList", postList);
-	}
-	
-	@RequestMapping("about")
-	public String about() {
-		return "about";
-	}
-	
-	@RequestMapping("/contact")
-	public String contact() {
-		return "contact";
-	}
+  // æ–°å»ºæ–‡ç« 
+  @RequestMapping(value = "/newarticle")
+  public String editarticle() {
+    // å¾—åˆ° session çš„å€¼ï¼Œåˆ¤æ–­æ˜¯å¦å·²ç»ç™»é™†
+    if (session.getAttribute("username") != null) {
+      return "admin/newblog";
+    }
+    return "admin/error";
+  }
+
+  // ä¿å­˜ md å’Œ HTML åˆ°æ•°æ®åº“
+  @RequestMapping(value = "/saveArticle", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg saveArticle(ArticleVO articleVO) {
+    Integer categoryId = articleService.getCategoryId(articleVO.getCategoryName());
+    Blog blog = new Blog();
+    blog.setCategoryid(categoryId);
+
+    blog.setContent(articleVO.getEditorHtml());
+    blog.setMd(articleVO.getEditorMarkdown());
+    blog.setTitle(articleVO.getTitle());
+    blog.setTitleintro(articleVO.getTitleIntro());
+    blog.setCreatedtime(articleVO.getCreatedTime());
+
+    articleService.save(blog);
+    return Msg.success("æ–°å»ºæ–‡ç« æˆåŠŸ!");
+  }
+
+  // ç¼–è¾‘æ–‡ç« 
+  @RequestMapping("/edit")
+  public String edit(
+      @RequestParam(value = "id", required = true, defaultValue = "1") int id, Model model) {
+    if (session.getAttribute("username") != null) {
+      model.addAttribute("blogid", id);
+      return "admin/edit";
+    }
+    return "admin/error";
+  }
+
+  @RequestMapping(value = "/updateArticle", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg updateArticle(ArticleVO articleVO) {
+
+    // è·å–æ–‡ç« å¯¹åº”çš„ åˆ†ç±»Id
+    Integer categoryId = articleService.getCategoryId(articleVO.getCategoryName());
+
+    Blog blog = new Blog();
+    blog.setId(articleVO.getId());
+    blog.setCategoryid(categoryId);
+    blog.setContent(articleVO.getEditorHtml());
+    blog.setMd(articleVO.getEditorMarkdown());
+    blog.setTitle(articleVO.getTitle());
+    blog.setTitleintro(articleVO.getTitleIntro());
+    blog.setCreatedtime(articleVO.getCreatedTime());
+    return Msg.success("ä¿®æ”¹æˆåŠŸ!");
+  }
+
+  // é€šè¿‡ id æŸ¥æ‰¾æ–‡ç« å¹¶è¿”å›
+  @RequestMapping("/getarticlebyid")
+  @ResponseBody
+  public Blog getarticlebyid(@RequestParam(value = "id", defaultValue = "1") int id) {
+    Blog blog = articleService.selectBlogById(id);
+    return blog;
+  }
+
+  // æ˜¾ç¤ºæ–‡ç« 
+  @RequestMapping(value = "showarticle", method = RequestMethod.GET)
+  public String showarticle(@RequestParam(value = "id", defaultValue = "1") int id, Model model) {
+    String mdString = articleService.getArticleMdStr(id);
+    model.addAttribute("mdString", mdString);
+    model.addAttribute("id", id);
+    return "showarticle";
+  }
+
+  // ä¾§è¾¹æ é˜…è¯»æ¨¡å¼
+  @RequestMapping(value = "/showarticlecustomcontanier", method = RequestMethod.GET)
+  public String showarticlecustomcontainer(
+      Model model, @RequestParam(value = "id", defaultValue = "1") int id) {
+    String customMd = articleService.getArticleMdStr(id);
+    model.addAttribute("customMd", customMd);
+    model.addAttribute("id", id);
+    return "showarticlecustomcontanier";
+  }
+
+  // åˆ é™¤æ–‡ç« 
+  @RequestMapping(value = "/delete", method = RequestMethod.GET)
+  public void delete(
+      @RequestParam(value = "id", required = true) int id, HttpServletResponse response)
+      throws IOException {
+    if (session.getAttribute("username") != null) {
+      articleService.deleteArticleById(id);
+    } else {
+      response.sendRedirect("deletenologin");
+    }
+  }
+
+  // æ²¡æœ‰ç™»é™†çš„æ—¶å€™ï¼Œå°±ä¸èƒ½åˆ é™¤æ–‡ç« 
+  @RequestMapping("/deletenologin")
+  public String deletenologin() {
+    return "admin/error";
+  }
+
+  /*
+  // è¿”å›æ­£å¸¸æ¨¡å¼
+  @RequestMapping(value="/backhtml", method=RequestMethod.POST)
+  public String backhtml(HttpServletRequest request, HttpServletResponse response,
+  		Model model, @RequestParam(value="md", required=true)String md) {
+  	System.out.println("backmd = " + md);
+  	model.addAttribute("backmd", md);
+  	return "showarticle";
+  }*/
+
+  // è¿”å›è¯„è®ºæ•°æœ€å¤šçš„å››ç¯‡æ–‡ç« 
+  @RequestMapping("/postarticle")
+  @ResponseBody
+  public Msg postarticle() {
+    List<Blog> list = articleService.getAll();
+    List<Blog> postList = articleService.postarticle(list);
+    return Msg.success().add("postList", postList);
+  }
+
+  @RequestMapping("about")
+  public String about() {
+    return "about";
+  }
+
+  @RequestMapping("/contact")
+  public String contact() {
+    return "contact";
+  }
 }

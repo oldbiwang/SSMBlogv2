@@ -10,6 +10,6 @@
 <title>王锐鹏博客</title>
 </head>
 <body>
-	${map.message }<a href="${APP_PATH }/validatellogin">继续修改文章</a>
+	${map.message }<a href="${APP_PATH}/admin/">继续修改文章</a>
 </body>
 </html>

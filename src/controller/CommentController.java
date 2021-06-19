@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,71 +20,82 @@ import service.CommentService;
 
 @Controller
 public class CommentController {
-	@Autowired
-	private CommentService commentService;
-	
-	// Ìá½»ÆÀÂÛ
-	@RequestMapping(value="/sendcomment", method=RequestMethod.POST)
-	@ResponseBody
-	public Msg sendcomment(@RequestParam(value="id", required=true)int id, 
-			@RequestParam("name") String name, @RequestParam("comment") String comment) throws ParseException {
-		System.out.println("name = " + name + " \ncomment = " + comment);
-		commentService.sendcomment(id, name, comment);
-		Msg msg = Msg.success();
-		msg.setMsg("Ìá½»ÆÀÂÛ³É¹¦£¡");
-		return msg;
-	}
-	
-	// »ñµÃÆÀÂÛ
-	@RequestMapping(value="/getComments", method=RequestMethod.GET)
-	@ResponseBody
-	public Msg getComments(@RequestParam("id")int id) {
-		// »ñÈ¡ÎÄÕÂËùÓĞµÄÆÀÂÛ
-		List<Comment> list = commentService.getComments(id);
-		return Msg.success().add("commentsList", list);
-	}
-	
-	// »ñµÃËùÓĞÆÀÂÛ
-	@RequestMapping(value="/getallcomments", method=RequestMethod.GET)
-	@ResponseBody
-	public Msg getallcomments() {
-		List<Comment> list = commentService.selectAll();
-		return Msg.success().add("commentList", list);
-	}
-	
-	// ÆÀÂÛºóÌ¨¹ÜÀí
-	@RequestMapping("/commentback")
-	public String commentback(HttpServletRequest request,HttpServletResponse response) {
-		//µÃµ½ session µÄÖµ£¬ÅĞ¶ÏÊÇ·ñÒÑ¾­µÇÂ½
-		if(request.getSession().getAttribute("username") != null) {
-			String username = request.getSession().getAttribute("username").toString();
-			if(username != null) {
-				return "admin/commentadmin";
-			}
-		}
-		return "admin/error";
-	}
-	
-	// É¾³ıÒ»ÌõÆÀÂÛ
-	@RequestMapping(value="/deleteacomment",method=RequestMethod.GET)
-	@ResponseBody
-	public Msg deleteacomment(@RequestParam("id") int id) {
-		commentService.deletea(id);
-		Msg msg = Msg.success();
-		msg.setMsg("´ËÌõÆÀÂÛÒÑÉ¾³ı£¡");
-		return msg;
-	}
-	
-	// Ìá½»ÆÀÂÛ
-	@RequestMapping(value="/sendheartword", method=RequestMethod.POST)
-	@ResponseBody
-	public Msg sendheartword(@RequestParam(value="id", required=true)int id, 
-			@RequestParam("name") String name, @RequestParam("comment") String comment) throws ParseException {
-		System.out.println("name = " + name + " \ncomment = " + comment);
-		commentService.sendcomment(id, name, comment);
-		Msg msg = Msg.success();
-		msg.setMsg("ÎÒÊÕµ½ÄãµÄĞÄÉùÁË£¡");
-		return msg;
-	}
+  private final CommentService commentService;
 
+  private final HttpSession session;
+
+  @Autowired
+  public CommentController(CommentService commentService, HttpSession session) {
+    this.commentService = commentService;
+    this.session = session;
+  }
+
+  // æäº¤è¯„è®º
+  @RequestMapping(value = "/sendcomment", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg sendcomment(
+      @RequestParam(value = "id", required = true) int id,
+      @RequestParam("name") String name,
+      @RequestParam("comment") String comment)
+      throws ParseException {
+    commentService.sendcomment(id, name, comment);
+    Msg msg = Msg.success();
+    msg.setMsg("æäº¤è¯„è®ºæˆåŠŸï¼");
+    return msg;
+  }
+
+  // è·å¾—è¯„è®º
+  @RequestMapping(value = "/getComments", method = RequestMethod.GET)
+  @ResponseBody
+  public Msg getComments(@RequestParam("id") int id) {
+    // è·å–æ–‡ç« æ‰€æœ‰çš„è¯„è®º
+    List<Comment> list = commentService.getComments(id);
+    return Msg.success().add("commentsList", list);
+  }
+
+  // è·å¾—æ‰€æœ‰è¯„è®º
+  @RequestMapping(value = "/getallcomments", method = RequestMethod.GET)
+  @ResponseBody
+  public Msg getallcomments() {
+    List<Comment> list = commentService.selectAll();
+    return Msg.success().add("commentList", list);
+  }
+
+  // è¯„è®ºåå°ç®¡ç†
+  @RequestMapping("/commentback")
+  public String commentback() {
+    // å¾—åˆ° session çš„å€¼ï¼Œåˆ¤æ–­æ˜¯å¦å·²ç»ç™»é™†
+    if (session.getAttribute("username") != null) {
+      String username = session.getAttribute("username").toString();
+      if (username != null) {
+        return "admin/commentadmin";
+      }
+    }
+    return "admin/error";
+  }
+
+  // åˆ é™¤ä¸€æ¡è¯„è®º
+  @RequestMapping(value = "/deleteacomment", method = RequestMethod.GET)
+  @ResponseBody
+  public Msg deleteacomment(@RequestParam("id") int id) {
+    commentService.deletea(id);
+    Msg msg = Msg.success();
+    msg.setMsg("æ­¤æ¡è¯„è®ºå·²åˆ é™¤ï¼");
+    return msg;
+  }
+
+  // æäº¤è¯„è®º
+  @RequestMapping(value = "/sendheartword", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg sendheartword(
+      @RequestParam(value = "id", required = true) int id,
+      @RequestParam("name") String name,
+      @RequestParam("comment") String comment)
+      throws ParseException {
+    System.out.println("name = " + name + " \ncomment = " + comment);
+    commentService.sendcomment(id, name, comment);
+    Msg msg = Msg.success();
+    msg.setMsg("æˆ‘æ”¶åˆ°ä½ çš„å¿ƒå£°äº†ï¼");
+    return msg;
+  }
 }

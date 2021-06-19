@@ -15,22 +15,22 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-	 <link href="css/bootstrap.min.css" rel="stylesheet">
-	 <link href="css/nav.css" rel="stylesheet">
+	 <link href="${APP_PATH}/css/bootstrap.min.css" rel="stylesheet">
+	 <link href="${APP_PATH}/css/nav.css" rel="stylesheet">
      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="${APP_PATH}/js/bootstrap.min.js"></script>
 	<script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
-	<link href="js/editormd/css/editormd.min.css" rel="stylesheet"
+	<link href="${APP_PATH}/js/editormd/css/editormd.min.css" rel="stylesheet"
 		type="text/css" />
-	<script src="js/editormd/editormd.js"></script>
-	<script src="js/editormd/editormd.amd.js"></script>
+	<script src="${APP_PATH}/js/editormd/editormd.js"></script>
+	<script src="${APP_PATH}/js/editormd/editormd.amd.js"></script>
 </head>
 <body>
 	<header>
 		<ul class="navul">
-				<li class="navli"><a href="${APP_PATH }/validatellogin">文章管理</a></li>
+				<li class="navli"><a href="${APP_PATH }/admin/">文章管理</a></li>
 				<li class="navli"><a href="${APP_PATH }/commentback">评论管理</a></li>
 				<li class="navli"><a href="${APP_PATH }/tagadmin">分类管理</a></li>
 				<li class="navli"><a href="${APP_PATH }/logout">log out</a></li>
@@ -57,7 +57,7 @@
 		        <h4 class="modal-title">新建分类!</h4>
 		      </div>
 		      <div class="modal-body">
-		        <form class="form-horizontal" action="${APP_PATH }/newtag" method="post">
+		        <form class="form-horizontal">
 					  <div class="form-group">
 					    <label class="control-label col-sm-2" for="name">name:</label>
 					    <div class="col-sm-10"> 
@@ -71,7 +71,7 @@
 					    </div>
 					  </div>
 					  <div class="form-group" style="text-align: center;">
-     					<input type="submit" id="newBtn" class="btn btn-default" value="确定"/>
+     					<input type="button" id="newBtn" class="btn btn-default" value="确定"/>
 						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					  </div>
 					</form>
@@ -103,11 +103,32 @@
 		
 		
 	</div>
-
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			getTag();
 		});
+
+		$('#newBtn').click(function() {
+			$.ajax({
+				type: "POST",
+				url: "${APP_PATH}/newTag",
+				// 取出正则的结果，发送数据
+				data: $(".form-horizontal").serialize(),
+				success: function (data) {
+					if (data.code == 100) {
+						swal({
+							text: data.msg
+						})
+						setTimeout(function () {
+						}, 3000);
+						window.location.href = "${APP_PATH}/tagadmin";
+					}
+				}
+			})
+		});
+
+
 		// 获得标签 
 		function getTag() {
 			$.ajax({
