@@ -15,17 +15,17 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-	 <link href="css/bootstrap.min.css" rel="stylesheet">
-	 <link href="css/nav.css" rel="stylesheet">
+	 <link href="${APP_PATH}/css/bootstrap.min.css" rel="stylesheet">
+	 <link href="${APP_PATH}/css/nav.css" rel="stylesheet">
      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="${APP_PATH}/js/bootstrap.min.js"></script>
 	<script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
-	<link href="js/editormd/css/editormd.min.css" rel="stylesheet"
+	<link href="${APP_PATH}/js/editormd/css/editormd.min.css" rel="stylesheet"
 		type="text/css" />
-	<script src="js/editormd/editormd.js"></script>
-	<script src="js/editormd/editormd.amd.js"></script>
+	<script src="${APP_PATH}/js/editormd/editormd.js"></script>
+	<script src="${APP_PATH}/js/editormd/editormd.amd.js"></script>
 </head>
 <body>
 	<header>
@@ -53,11 +53,11 @@
 		<div class="row" style="text-align: center;">
 			<div class="col-md-18 row" id="page_info_area"></div>
 		</div>
-		
+
 		<!-- 删除模态框 Modal -->
 		<div id="myModal" class="modal fade" role="dialog">
 		  <div class="modal-dialog">
-		
+
 		    <!-- Modal content-->
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -72,7 +72,7 @@
 		        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 		      </div>
 		    </div>
-		
+
 		  </div>
 		</div>
 	</div>
@@ -116,16 +116,16 @@
 				li.css("word-wrap","break-word").css("word-break","break-all")
 				.css("overflow","hidden");
 				var div = $("<div></div>").addClass("btn-group").css("float","right");
-				
-				/* <button type="button" class="btn btn-info btn-lg" 
+
+				/* <button type="button" class="btn btn-info btn-lg"
 				data-toggle="modal" data-target="#myModal">Open Large Modal</button> */
-				
-				
+
+
 				var editBtn = $("<button></button>").addClass("btn btn-primary").append("编辑")
 						.appendTo(div);
 					 editBtn.bind("click", function() {
 						edit(item.id);
-					 }); 
+					 });
 				var delBtn = $("<button></button>").addClass("btn btn-danger").append("删除").attr("data-toggle", "modal")
 						.attr("data-target", "#myModal").appendTo(div);
 					delBtn.bind("click", function() {
@@ -212,17 +212,17 @@
 			var navEle = $("<nav></nav>").append(ul);
 			navEle.appendTo("#page_nav_area");
 		}
-		
+
 		// 新建博客的控制器映射
 		function newblog() {
-			window.location='${APP_PATH }/islogin';	
+			window.location='${APP_PATH }/islogin';
 		}
-		
+
 		// 编辑博客发出的请求
 		function edit(id) {
 			window.location='${APP_PATH }/edit?id=' + id;
 		};
-		
+
 		// 删除函数
 		function del(id, pageNum) {
 			alert(id);
@@ -235,7 +235,7 @@
 						alert("删除成功！");
 						// 回到当前页
 						to_page(pageNum);
-					} 
+					}
 				});
 			});
 		}

@@ -5,11 +5,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import entity.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.springframework.web.bind.annotation.ResponseBody;
 import service.LoginService;
 
 @Controller
@@ -26,22 +29,20 @@ public class LoginController {
     return "admin/login";
   }
 
-  @RequestMapping(value = "/validatellogin")
-  public String validatelogin(
+  @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
+  @ResponseBody
+  public Msg doLogin(
       @RequestParam(value = "username", required = false) String username,
       @RequestParam(value = "password", required = false) String password,
-      HttpServletRequest request,
-      HttpServletResponse response)
+      HttpServletRequest request)
       throws SaslException {
-    if (request.getSession().getAttribute("username") != null) {
-      return "admin/backadmin";
-    }
+
     if (service.validate(username, password)) {
       HttpSession session = request.getSession();
       session.setAttribute("username", username);
-      return "admin/backadmin";
+      return Msg.success("登录成功!，正在进入后台");
     }
-    return "admin/loginfail";
+    return Msg.fail("登录失败!");
   }
 
   // 退出登陆
